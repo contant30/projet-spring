@@ -1,11 +1,10 @@
-package fr.diginamic.hello.controleurs;
+package fr.diginamic.controleurs;
 
-import fr.diginamic.hello.DTO.DepartementDto;
-import fr.diginamic.hello.entites.Departement;
-import fr.diginamic.hello.exception.VilleApiException;
-import fr.diginamic.hello.mapper.DepartementMapper;
-import fr.diginamic.hello.mapper.VilleMapper;
-import fr.diginamic.hello.service.DepartementService;
+import fr.diginamic.DTO.DepartementDto;
+import fr.diginamic.entites.Departement;
+import fr.diginamic.exception.VilleApiException;
+import fr.diginamic.mapper.DepartementMapper;
+import fr.diginamic.service.DepartementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -59,18 +58,15 @@ public class DepartementControleur {
         try {
             if (result.hasErrors()) {
                 List<FieldError> errors = result.getFieldErrors();
-                String message = errors.stream()
-                        .map(e -> e.getField() + " : " + e.getDefaultMessage())
-                        .collect(Collectors.joining(", "));
+                String message = errors.stream().map(e -> e.getField() + " : " + e.getDefaultMessage()).collect(Collectors.joining(", "));
                 return ResponseEntity.badRequest().body(message);
             }
 
             Departement departement = departementMapper.toBean(departementDto);
 
             List<Departement> departements = departementService.ajouterDepartement(departement);
-            String noms = departements.stream()
-                    .map(Departement::getNom)
-                    .collect(Collectors.joining(", "));
+            String noms = departements.stream().map(Departement::getNom).collect(Collectors.joining(", "));
+
             return ResponseEntity.ok("Les départements suivantes sont maintenant en base : " + noms);
 
         } catch (VilleApiException e) {
@@ -92,9 +88,7 @@ public class DepartementControleur {
 
         if (result.hasErrors()) {
             List<FieldError> errors = result.getFieldErrors();
-            String message = errors.stream()
-                    .map(e -> e.getField() + " : " + e.getDefaultMessage())
-                    .collect(Collectors.joining(", "));
+            String message = errors.stream().map(e -> e.getField() + " : " + e.getDefaultMessage()).collect(Collectors.joining(", "));
             throw new VilleApiException(message);
         }
 
@@ -103,7 +97,4 @@ public class DepartementControleur {
         departementService.modifierDepartementNom(id, departement);
         return ResponseEntity.ok("La ville " +departementDto.getNom() + " a été modifiée");
     }
-
-
-
 }

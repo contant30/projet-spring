@@ -1,4 +1,4 @@
-package fr.diginamic.hello.DTO;
+package fr.diginamic.DTO;
 
 public class VilleDto {
 

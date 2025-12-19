@@ -1,12 +1,12 @@
-package fr.diginamic.hello.controleurs;
+package fr.diginamic.controleurs;
 
-import fr.diginamic.hello.DTO.DepartementDto;
-import fr.diginamic.hello.DTO.VilleDto;
-import fr.diginamic.hello.entites.Departement;
-import fr.diginamic.hello.entites.Ville;
-import fr.diginamic.hello.exception.VilleApiException;
-import fr.diginamic.hello.service.DepartementService;
-import fr.diginamic.hello.service.VilleService;
+import fr.diginamic.DTO.DepartementDto;
+import fr.diginamic.DTO.VilleDto;
+import fr.diginamic.entites.Departement;
+import fr.diginamic.entites.Ville;
+import fr.diginamic.exception.VilleApiException;
+import fr.diginamic.service.DepartementService;
+import fr.diginamic.service.VilleService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import fr.diginamic.hello.mapper.VilleMapper;
+import fr.diginamic.mapper.VilleMapper;
 
 
 import java.util.List;

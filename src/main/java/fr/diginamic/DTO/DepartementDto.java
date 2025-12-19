@@ -1,6 +1,5 @@
-package fr.diginamic.hello.DTO;
+package fr.diginamic.DTO;
 
-import org.springframework.web.accept.ApiVersionResolver;
 
 public class DepartementDto {
 

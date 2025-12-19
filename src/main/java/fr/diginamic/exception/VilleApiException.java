@@ -1,4 +1,4 @@
-package fr.diginamic.hello.exception;
+package fr.diginamic.exception;
 
 public class VilleApiException extends Exception {
 

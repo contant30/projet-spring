@@ -1,10 +1,9 @@
-package fr.diginamic.hello.service;
+package fr.diginamic.service;
 
 
-import fr.diginamic.hello.dao.VilleDao;
-import fr.diginamic.hello.entites.Departement;
-import fr.diginamic.hello.entites.Ville;
-import fr.diginamic.hello.exception.VilleApiException;
+import fr.diginamic.dao.VilleDao;
+import fr.diginamic.entites.Ville;
+import fr.diginamic.exception.VilleApiException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

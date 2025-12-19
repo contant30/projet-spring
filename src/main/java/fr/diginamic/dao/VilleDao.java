@@ -1,8 +1,8 @@
-package fr.diginamic.hello.dao;
+package fr.diginamic.dao;
 
 
-import fr.diginamic.hello.entites.Ville;
-import fr.diginamic.hello.exception.VilleApiException;
+import fr.diginamic.entites.Ville;
+import fr.diginamic.exception.VilleApiException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

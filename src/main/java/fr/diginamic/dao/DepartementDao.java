@@ -1,6 +1,6 @@
-package fr.diginamic.hello.dao;
+package fr.diginamic.dao;
 
-import fr.diginamic.hello.entites.Departement;
+import fr.diginamic.entites.Departement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -53,9 +53,7 @@ public class DepartementDao {
      * @return
      */
     public Departement getDepartementCode(String codeDepartement){
-        TypedQuery<Departement> query = em.createQuery(
-                "SELECT d FROM Departement d WHERE d.codePostale = :code",
-                Departement.class);
+        TypedQuery<Departement> query = em.createQuery("SELECT d FROM Departement d WHERE d.codePostale = :code",Departement.class);
         query.setParameter("code", codeDepartement);
 
         List<Departement> resultats = query.getResultList();
@@ -79,6 +77,4 @@ public class DepartementDao {
     public void modifierDepartement(Departement departement) {
         em.merge(departement);
     }
-
-
 }

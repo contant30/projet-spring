@@ -1,7 +1,7 @@
-package fr.diginamic.hello.mapper;
+package fr.diginamic.mapper;
 
-import fr.diginamic.hello.DTO.VilleDto;
-import fr.diginamic.hello.entites.Ville;
+import fr.diginamic.DTO.VilleDto;
+import fr.diginamic.entites.Ville;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,6 +20,7 @@ public class VilleMapper {
         Ville ville = new Ville();
         ville.setNom(dto.getNom());
         ville.setPopulation(dto.getPopulation());
+
         return ville;
     }
 

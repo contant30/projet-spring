@@ -1,7 +1,7 @@
-package fr.diginamic.hello.mapper;
+package fr.diginamic.mapper;
 
-import fr.diginamic.hello.DTO.DepartementDto;
-import fr.diginamic.hello.entites.Departement;
+import fr.diginamic.DTO.DepartementDto;
+import fr.diginamic.entites.Departement;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +19,7 @@ public class DepartementMapper {
         Departement departement = new Departement();
         departement.setNom(dto.getNom());
         departement.setCodePostale(dto.getCodePostale());
+
         return departement;
     }
 
