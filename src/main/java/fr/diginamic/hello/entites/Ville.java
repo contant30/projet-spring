@@ -74,6 +74,10 @@ public class Ville {
     public void setPopulation(int population) {this.population = population;}
     public int getPopulation() {return population;}
 
+    public void setDepartement(Departement departement) {
+        this.departement = departement;
+    }
+
     @Override
     public String toString() {
         return "Ville{" +

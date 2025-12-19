@@ -43,9 +43,25 @@ public class DepartementDao {
      * @param id l'identifiant du département recherché
      * @return un département par son id
      */
-    public Departement getDepartementId(int id) {
+    public Departement getDepartementId(Long id) {
         return em.find(Departement.class, id);
     }
+
+    /**
+     * Recherche par code de departement
+     * @param codeDepartement
+     * @return
+     */
+    public Departement getDepartementCode(String codeDepartement){
+        TypedQuery<Departement> query = em.createQuery(
+                "SELECT d FROM Departement d WHERE d.codePostale = :code",
+                Departement.class);
+        query.setParameter("code", codeDepartement);
+
+        List<Departement> resultats = query.getResultList();
+        return resultats.isEmpty() ? null : resultats.get(0);
+    }
+
 
     /**
      * @param nom le nom du département recherché
@@ -63,11 +79,6 @@ public class DepartementDao {
     public void modifierDepartement(Departement departement) {
         em.merge(departement);
     }
-
-
-
-
-
 
 
 }

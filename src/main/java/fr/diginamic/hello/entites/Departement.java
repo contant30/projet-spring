@@ -16,7 +16,7 @@ public class Departement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column ( name = "nom_departement")
     private String nom;
@@ -56,7 +56,6 @@ public class Departement {
     public String getCodePostale() {
         return codePostale;
     }
-
 
     public void setCodePostale(String codePostale) {
         this.codePostale = codePostale;

@@ -38,8 +38,13 @@ public class DepartementService {
      * @return un département par son id
      */
     @Transactional
-    public Departement extractDepartementID(int idDepartement) {
+    public Departement extractDepartementID(Long idDepartement) {
         return departementDao.getDepartementId(idDepartement);
+    }
+
+    @Transactional
+    public Departement extractDepartementCode(String codeDepartement) {
+        return departementDao.getDepartementCode(codeDepartement);
     }
 
     /**
@@ -79,9 +84,7 @@ public class DepartementService {
         if (chaine == null || chaine.trim().isEmpty()) {
             throw new VilleApiException("La recherche ne peut être vide ou null");
         }
-        return extraireDepartement().stream()
-                .filter(departement -> departement.getNom().toLowerCase().startsWith(chaine.toLowerCase()))
-                .collect(Collectors.toList());
+        return extraireDepartement().stream().filter(departement -> departement.getNom().toLowerCase().startsWith(chaine.toLowerCase())).collect(Collectors.toList());
     }
 
     /**
@@ -92,7 +95,7 @@ public class DepartementService {
      * @throws VilleApiException
      */
     @Transactional
-    public List<Departement> modifierDepartementNom(Integer idDepartement, Departement departementModifiee) throws VilleApiException{
+    public List<Departement> modifierDepartementNom(Long idDepartement, Departement departementModifiee) throws VilleApiException{
 
         Departement departementExiste = departementDao.getDepartementId(idDepartement);
         if (departementExiste == null) {
@@ -117,10 +120,4 @@ public class DepartementService {
         // Retourne la liste des villes
         return extraireDepartement();
     }
-
-
-
-
-
-
 }
