@@ -1,11 +1,20 @@
 package fr.diginamic.DTO;
 
+
+import jakarta.validation.constraints.Min;
+
 public class VilleDto {
 
     private String nom;
+
+    @Min(value = 1, message="La population de la ville doit être supérieure à 1")
     private Integer population;
+
+
     private String codeDepartement;
+
     private Long idDepartement;
+
     private DepartementDto departementDto;
 
 
@@ -27,13 +36,9 @@ public class VilleDto {
         this.nom = nom;
     }
 
-    public String getCodeDepartement() {
-        return codeDepartement;
-    }
+    public String getCodeDepartement() {return codeDepartement;}
 
-    public void setCodeDepartement(String codeDepartement) {
-        this.codeDepartement = codeDepartement;
-    }
+    public void setCodeDepartement(String codeDepartement) {this.codeDepartement = codeDepartement;}
 
     public Long getIdDepartement() {
         return idDepartement;
