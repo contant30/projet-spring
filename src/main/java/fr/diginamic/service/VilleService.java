@@ -4,6 +4,7 @@ package fr.diginamic.service;
 import fr.diginamic.dao.VilleDao;
 import fr.diginamic.entites.Ville;
 import fr.diginamic.exception.VilleApiException;
+import fr.diginamic.repository.VilleRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,9 @@ public class VilleService {
 
     @Autowired
     private VilleDao villeDao;
+
+    @Autowired
+    private VilleRepository villeRepository;
 
 
     @Autowired
@@ -104,21 +108,21 @@ public class VilleService {
         return extraireVille();
     }
 
-    /**
-     * Recherche une ville par rapport à son nom
-     * @param chaine
-     * @return
-     * @throws VilleApiException
-     */
-    @Transactional
-    public List<Ville> rechercherVilleParNom(String chaine) throws VilleApiException {
-        if (chaine == null || chaine.trim().isEmpty()) {
-            throw new VilleApiException("La recherche ne peut être vide ou null");
-        }
-        return extraireVille().stream()
-                .filter(ville -> ville.getNom().toLowerCase().startsWith(chaine.toLowerCase()))
-                .collect(Collectors.toList());
-    }
+//    /**
+//     * Recherche une ville par rapport à son nom
+//     * @param chaine
+//     * @return
+//     * @throws VilleApiException
+//     */
+//    @Transactional
+//    public List<Ville> rechercherVilleParNom(String chaine) throws VilleApiException {
+//        if (chaine == null || chaine.trim().isEmpty()) {
+//            throw new VilleApiException("La recherche ne peut être vide ou null");
+//        }
+//        return extraireVille().stream()
+//                .filter(ville -> ville.getNom().toLowerCase().startsWith(chaine.toLowerCase()))
+//                .collect(Collectors.toList());
+//    }
 
     /**
      *Supprime une ville par rapport à son Id
@@ -128,4 +132,32 @@ public class VilleService {
     public void supprimerVille(int id) throws VilleApiException {
         villeDao.supprimerVille(id);
     }
+
+
+
+    public List<Ville> rechercherVilleParNom(String prefix) {
+        return villeRepository.findByNomStartingWithIgnoreCase(prefix);
+    }
+
+    public List<Ville> villesPopulationSupMin(Integer min) {
+        return villeRepository.findByPopulationGreaterThanOrderByPopulationDesc(min);
+    }
+
+    public List<Ville> villesPopulationsSupMinInfMax(Integer min, Integer max){
+        return villeRepository.findByPopulationBetweenOrderByPopulationDesc(min, max);
+    }
+
+    public List<Ville> villesPopulationDepartementSupMin(String codeDep,Integer min){
+        return villeRepository.findByDepartementCodePostaleAndPopulationGreaterThanOrderByPopulationDesc(codeDep, min);
+    }
+
+    public List<Ville> villesPopulationDepartementSupMinInfMax(String codeDep,Integer min,Integer max ){
+        return villeRepository.findByDepartementCodePostaleAndPopulationBetweenOrderByPopulationDesc(codeDep, min, max);
+    }
+
+    public List<Ville> topVillesDepartement (int n, String codeDep){
+        return villeRepository.findTopByDepartementCodePostaleOrderByPopulationDesc(codeDep, n);
+    }
+
+
 }

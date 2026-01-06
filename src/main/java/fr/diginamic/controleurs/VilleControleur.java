@@ -203,21 +203,92 @@ private final VilleService villeService;
         }
     }
 
+//    /**
+//     *
+//     * @param min
+//     * @return
+//     * @throws VilleApiException
+//     */
+//    @GetMapping("/population/{min}")
+//    public List<VilleDto> getVillePopulation(@PathVariable int min) throws VilleApiException {
+//        System.out.println("Recherche par nom = " + min);
+//
+//        if (min < 0) {
+//            throw new VilleApiException("La recherche ne peut être vide ou null");
+//        }
+//
+//        List<Ville> villes = villeService.extraireVille().stream().filter(ville -> ville.getPopulation() > min).collect(Collectors.toList());
+//
+//        if (villes.isEmpty()) {
+//            throw new VilleApiException("Aucune ville trouvée avec une population supérieure à " + min);
+//        }
+//        return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
+//    }
+
+    /**
+     * Recherche toutes les villes dont la population est supérieure à min
+     * @param min
+     * @return
+     */
     @GetMapping("/population/{min}")
-    public List<VilleDto> getVillePopulation(@PathVariable int min) throws VilleApiException {
-        System.out.println("Recherche par nom = " + min);
-
-        if (min < 0) {
-            throw new VilleApiException("La recherche ne peut être vide ou null");
-        }
-
-        List<Ville> villes = villeService.extraireVille().stream().filter(ville -> ville.getPopulation() > min).collect(Collectors.toList());
-
-        if (villes.isEmpty()) {
-            throw new VilleApiException("Aucune ville trouvée avec une population supérieure à " + min);
-        }
-        return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
+    public List<VilleDto> getVillePopulation(@PathVariable Integer min) {
+        return villeService.villesPopulationSupMin(min)
+                .stream().map(villeMapper::toDto)
+                .collect(Collectors.toList());
     }
+
+    /**
+     * Recherche toutes les villes dont la population est supérieure à Min et inférieur à Max
+     * @param min
+     * @param max
+     * @return
+     */
+    @GetMapping("/population/{min}/{max}")
+    public List<VilleDto> getVillePopulation(@PathVariable Integer min, @PathVariable Integer max){
+        return villeService.villesPopulationsSupMinInfMax(min, max)
+                .stream().map(villeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Recherche toutes les villes d'un département dont la population est supérieure à Min
+     * @param code
+     * @param min
+     * @return
+     */
+    @GetMapping("/departement/{code}/population/{min}")
+    public List<VilleDto> getVillesSupMinDep(@PathVariable String code, @PathVariable Integer min){
+        return villeService.villesPopulationDepartementSupMin(code, min)
+                .stream().map(villeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Recherche toutes les villes d'un département dont la population est supérieure à Min et inférieur à Max
+     * @param code
+     * @param min
+     * @return
+     */
+    @GetMapping("/departement/{code}/population/{min}/{max}")
+    public List<VilleDto> getVillesSupMinInfMaxDep(@PathVariable String code, @PathVariable Integer min, @PathVariable Integer max){
+     return villeService.villesPopulationDepartementSupMinInfMax(code, min, max)
+             .stream().map(villeMapper::toDto)
+             .collect(Collectors.toList());
+    }
+
+    /**
+     * Recherche les n villes les plus peuplées d'un département
+     * @param code
+     * @param min
+     * @return
+     */
+    @GetMapping("/departement/{code}/top/{n}")
+    public List<VilleDto> getTopVillesDepartement (@PathVariable String code,@PathVariable int n){
+        return villeService.topVillesDepartement(n, code)
+                .stream().map(villeMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
 }
 
 
