@@ -6,4 +6,5 @@ public class VilleApiException extends Exception {
         super(message);
     }
 
+
 }
