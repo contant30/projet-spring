@@ -1,6 +1,5 @@
 package fr.diginamic.repository;
 
-import fr.diginamic.entites.Departement;
 import fr.diginamic.entites.Ville;
 import org.springframework.data.repository.CrudRepository;
 
@@ -9,10 +8,13 @@ import java.util.List;
 public interface VilleRepository extends CrudRepository<Ville, Integer> {
 
 
+    // Recherche une ville par son nom
+    Ville findByNomIgnoreCase(String nom);
+
+
     // Recherche de toutes les villes dont le nom commence par une chaine de caractères
     //donnée
     List<Ville> findByNomStartingWithIgnoreCase(String prefix);
-
 
     // Recherche de toutes les villes dont la population est supérieure à min (paramètre de
     //type int). Les villes sont retournées par population descendante.

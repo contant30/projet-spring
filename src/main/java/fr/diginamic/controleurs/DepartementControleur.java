@@ -4,7 +4,7 @@ import fr.diginamic.DTO.DepartementDto;
 import fr.diginamic.entites.Departement;
 import fr.diginamic.exception.VilleApiException;
 import fr.diginamic.mapper.DepartementMapper;
-import fr.diginamic.service.DepartementService;
+import fr.diginamic.service.iDepartementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,17 +27,17 @@ import java.util.stream.Collectors;
 public class DepartementControleur {
 
     @Autowired
-    private final DepartementService departementService;
+    private final iDepartementService iDepartementService;
 
     @Autowired
     private DepartementMapper departementMapper;
 
     /**
      * Constructeur
-     * @param departementService
+     * @param iDepartementService
      */
-    public DepartementControleur(DepartementService departementService) {
-        this.departementService = departementService;
+    public DepartementControleur(iDepartementService iDepartementService) {
+        this.iDepartementService = iDepartementService;
     }
 
     /**
@@ -44,7 +45,7 @@ public class DepartementControleur {
      */
     @GetMapping
     public List<DepartementDto> getDepartement() {
-        List<Departement> departements = departementService.extraireDepartement();
+        List<Departement> departements = iDepartementService.extraireDepartement();
         return departements.stream().map(departementMapper::toDto).collect(Collectors.toList());
     }
 
@@ -64,7 +65,7 @@ public class DepartementControleur {
 
             Departement departement = departementMapper.toBean(departementDto);
 
-            List<Departement> departements = departementService.ajouterDepartement(departement);
+            List<Departement> departements = Collections.singletonList(iDepartementService.ajouterDepartement(departement));
             String noms = departements.stream().map(Departement::getNom).collect(Collectors.joining(", "));
 
             return ResponseEntity.ok("Les départements suivantes sont maintenant en base : " + noms);
@@ -94,7 +95,7 @@ public class DepartementControleur {
 
         Departement departement = departementMapper.toBean(departementDto);
 
-        departementService.modifierDepartementNom(id, departement);
+        iDepartementService.modifierDepartementNom(id, departement);
         return ResponseEntity.ok("La ville " +departementDto.getNom() + " a été modifiée");
     }
 }

@@ -14,6 +14,7 @@ public class VilleMapper {
 
     public VilleDto toDto (Ville ville){
         VilleDto dto = new VilleDto();
+        dto.setId(ville.getId());
         dto.setNom(ville.getNom());
         dto.setPopulation(ville.getPopulation());
 
@@ -30,6 +31,7 @@ public class VilleMapper {
         Ville ville = new Ville();
         ville.setNom(dto.getNom());
         ville.setPopulation(dto.getPopulation());
+        ville.setId(dto.getId());
 
         return ville;
     }

@@ -5,11 +5,12 @@ import jakarta.validation.constraints.Min;
 
 public class VilleDto {
 
+    private Long id;
+
     private String nom;
 
     @Min(value = 1, message="La population de la ville doit être supérieure à 1")
     private Integer population;
-
 
     private String codeDepartement;
 
@@ -56,5 +57,9 @@ public class VilleDto {
         this.departementDto = departementDto;
     }
 
+    public Long getId() {return id;}
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

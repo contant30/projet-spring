@@ -20,7 +20,7 @@ public class Ville {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotNull
     @Size(min =2, message="Le nom de la ville doit avoir au moins 2 caractères ")
@@ -54,17 +54,17 @@ public class Ville {
      * @param nom           représente le nom de la ville
      * @param population    représente la population de la ville
      */
-    public Ville(Integer id,String nom, int population ) {
+    public Ville(Long id,String nom, int population ) {
         this.nom = nom;
         this.population = population;
         this.id = id;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

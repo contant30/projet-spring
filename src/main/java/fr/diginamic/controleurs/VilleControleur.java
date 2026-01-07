@@ -5,8 +5,9 @@ import fr.diginamic.DTO.VilleDto;
 import fr.diginamic.entites.Departement;
 import fr.diginamic.entites.Ville;
 import fr.diginamic.exception.VilleApiException;
-import fr.diginamic.service.DepartementService;
-import fr.diginamic.service.VilleService;
+import fr.diginamic.repository.VilleRepository;
+import fr.diginamic.service.IVilleService;
+import fr.diginamic.service.iDepartementService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,42 +30,53 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ville")
-public class VilleControleur {
+public class VilleControleur implements IVilleControleur {
 
 
 @Autowired
-private final VilleService villeService;
+private final IVilleService IVilleService;
 
     @Autowired
     private VilleMapper villeMapper;
 
     @Autowired
-    private DepartementService departementService;
+    private iDepartementService iDepartementService;
+
+    @Autowired
+    private VilleRepository villeRepository;
+
+
 
     /**
      * Constructeur
-     * @param villeService
+     * @param IVilleService
      */
-    public VilleControleur(VilleService villeService) {
-        this.villeService = villeService;
+    public VilleControleur(IVilleService IVilleService) {
+        this.IVilleService = IVilleService;
     }
 
+
     /**
+     * Affiche toutes les villes
      * @return une liste de ville
      */
     @GetMapping
+    @Override
     public List<VilleDto> getVille() {
-        List<Ville> villes = villeService.extraireVille();
+        List<Ville> villes = IVilleService.extraireVille();
         return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
     }
 
+
     /**
+     * Ajouter une ville
      * @param villeDto le nom de la ville à ajouter
      * @param result
      * @return une liste de ville
      */
 
     @PostMapping
+    @Override
     public ResponseEntity<String> ajouterVille(@Valid @RequestBody VilleDto villeDto, BindingResult result) {
         try {
             if (result.hasErrors()) {
@@ -72,7 +84,7 @@ private final VilleService villeService;
                 return ResponseEntity.badRequest().body(message);
             }
 
-            // Au moins code doit être présent
+            // code doit être présent
             DepartementDto depDto = villeDto.getDepartementDto();
             if (depDto == null ||(depDto.getId() == null &&(depDto.getCodePostale() == null || depDto.getCodePostale().isBlank()))) {
                 return ResponseEntity.badRequest().body("Un département doit être associé");
@@ -81,19 +93,20 @@ private final VilleService villeService;
             Departement departement = null;
             // Recherche par id
             if (depDto.getId() != null) {
-                departement = departementService.extractDepartementID(depDto.getId());
+                departement = iDepartementService.extractDepartementID(depDto.getId())
+                        .orElseThrow(() -> new VilleApiException("Département ID " + depDto.getId() + " introuvable"));
             }
 
             if (departement == null &&depDto.getCodePostale() != null && !depDto.getCodePostale().isEmpty()) {
 
                 String code = depDto.getCodePostale();
-                departement = departementService.extractDepartementCode(code);
+                departement = iDepartementService.extractDepartementCode(code);
 
                 if (departement == null) {
                     Departement nouveau = new Departement();
                     nouveau.setNom(depDto.getNom());
                     nouveau.setCodePostale(depDto.getCodePostale());
-                    departementService.saveDepartement(nouveau);
+                    iDepartementService.saveDepartement(nouveau);
                     departement = nouveau;
                 }
             }
@@ -106,7 +119,7 @@ private final VilleService villeService;
             Ville ville = villeMapper.toBean(villeDto);
             ville.setDepartement(departement);
 
-            List<Ville> villes = villeService.ajouterVille(ville);
+            List<Ville> villes = IVilleService.ajouterVille(ville);
             String noms = villes.stream().map(Ville::getNom).collect(Collectors.joining(", "));
             return ResponseEntity.ok("Les villes suivantes sont maintenant en base : " + noms);
 
@@ -115,21 +128,10 @@ private final VilleService villeService;
         }
     }
 
-    /**
-     * Recherche ville par caractère
-     * @param chaine
-     * @return
-     * @throws VilleApiException
-     */
-    @GetMapping("/chaine/{chaine}")
-    public List<VilleDto> getVilleChaine(@PathVariable String chaine) throws VilleApiException {
-        System.out.println("Recherche par nom = " + chaine);
-        List<Ville> villes = villeService.rechercherVilleParNom(chaine);
-        return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
-    }
+
 
     /**
-     *
+     * Modifier une ville par son id
      * @param id
      * @param villeDto
      * @param result
@@ -137,6 +139,7 @@ private final VilleService villeService;
      * @throws VilleApiException
      */
     @PutMapping("/{id}")
+    @Override
     public ResponseEntity<String> modifierVille(@PathVariable int id, @Valid @RequestBody VilleDto villeDto, BindingResult result) throws VilleApiException {
         System.out.println("Modification de la ville id = " + id);
 
@@ -148,60 +151,33 @@ private final VilleService villeService;
 
         Ville ville = villeMapper.toBean(villeDto);
 
-        villeService.modifierVilleNom(id, ville);
+        IVilleService.modifierVilleNom(id, ville);
         return ResponseEntity.ok("La ville " + villeDto.getNom() + " a été modifiée");
     }
 
-    /**
-     * recherche par son ID
-     * @param id
-     * @return
-     */
-    @GetMapping("/{id}")
-    public Optional<VilleDto> getVilleId(@PathVariable int id) {
-        System.out.println("Recherche par id = " + id);
-        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getId() == id).findFirst();
-        return ville.map(villeMapper::toDto);
-    }
 
-    /**
-     * Recherche par nom
-     * @param nom
-     * @return
-     * @throws VilleApiException
-     */
-    @GetMapping("/nom/{nom}")
-    public VilleDto getVilleNom(@PathVariable String nom) throws VilleApiException {
-        System.out.println("Recherche par nom = " + nom);
 
-        if (nom == null || nom.trim().isEmpty()) {
-            throw new VilleApiException("La recherche ne peut être vide ou null");
-        }
-
-        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getNom().equalsIgnoreCase(nom)).findFirst();
-
-        if (ville.isEmpty()) {
-            throw new VilleApiException("Aucune ville trouvée avec le nom : " + nom);
-        }
-        return villeMapper.toDto(ville.get());
-    }
-
-    /**
-     * Supprime une ville par rapport à son Id
-     * @param id
-     * @return
-     */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> supprimerVille(@PathVariable int id) {
-        System.out.println("Suppression de la ville id = " + id);
-
-        try {
-            villeService.supprimerVille(id);
-            return ResponseEntity.ok("La ville avec l'id " + id + " a été supprimée");
-        } catch (VilleApiException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    /**
+//     * Recherche par nom
+//     * @param nom
+//     * @return
+//     * @throws VilleApiException
+//     */
+//    @GetMapping("/nom/{nom}")
+//    public VilleDto getVilleNom(@PathVariable String nom) throws VilleApiException {
+//        System.out.println("Recherche par nom = " + nom);
+//
+//        if (nom == null || nom.trim().isEmpty()) {
+//            throw new VilleApiException("La recherche ne peut être vide ou null");
+//        }
+//
+//        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getNom().equalsIgnoreCase(nom)).findFirst();
+//
+//        if (ville.isEmpty()) {
+//            throw new VilleApiException("Aucune ville trouvée avec le nom : " + nom);
+//        }
+//        return villeMapper.toDto(ville.get());
+//    }
 
 //    /**
 //     *
@@ -226,13 +202,83 @@ private final VilleService villeService;
 //    }
 
     /**
+     * recherche par son ID
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    @Override
+    public Optional<VilleDto> getVilleId(@PathVariable int id) {
+        System.out.println("Recherche par id = " + id);
+        Optional<Ville> ville = IVilleService.extraireVille().stream().filter(v -> v.getId() == id).findFirst();
+        return ville.map(villeMapper::toDto);
+    }
+
+//    /**
+//     * Recherche par nom
+//     * @param nom
+//     * @return
+//     * @throws VilleApiException
+//     */
+//    @GetMapping("/nom/{nom}")
+//    public VilleDto getVilleNom(@PathVariable String nom) throws VilleApiException {
+//        System.out.println("Recherche par nom = " + nom);
+//
+//        if (nom == null || nom.trim().isEmpty()) {
+//            throw new VilleApiException("La recherche ne peut être vide ou null");
+//        }
+//
+//        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getNom().equalsIgnoreCase(nom)).findFirst();
+//
+//        if (ville.isEmpty()) {
+//            throw new VilleApiException("Aucune ville trouvée avec le nom : " + nom);
+//        }
+//        return villeMapper.toDto(ville.get());
+//    }
+
+    /**
+     * Supprime une ville par rapport à son Id
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/{id}")
+    @Override
+    public ResponseEntity<String> supprimerVille(@PathVariable int id) {
+        System.out.println("Suppression de la ville id = " + id);
+
+        try {
+            IVilleService.supprimerVille(id);
+            return ResponseEntity.ok("La ville avec l'id " + id + " a été supprimée");
+        } catch (VilleApiException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    /**
+     * Recherche une ville par nom
+     * @param nom
+     * @return
+     * @throws VilleApiException
+     */
+    @GetMapping("/nom/{nom}")
+    @Override
+    public VilleDto getVillePopulationNom(@PathVariable String nom) throws VilleApiException {
+        Ville ville = IVilleService.rechercheVilleParNom(nom);  // Retourne Ville unique
+        if (ville == null) {
+            throw new VilleApiException("Ville non trouvée : " + nom);
+        }
+        return villeMapper.toDto(ville);  // Mapper vers DTO
+    }
+
+    /**
      * Recherche toutes les villes dont la population est supérieure à min
      * @param min
      * @return
      */
     @GetMapping("/population/{min}")
+    @Override
     public List<VilleDto> getVillePopulation(@PathVariable Integer min) {
-        return villeService.villesPopulationSupMin(min)
+        return IVilleService.villesPopulationSupMin(min)
                 .stream().map(villeMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -244,8 +290,9 @@ private final VilleService villeService;
      * @return
      */
     @GetMapping("/population/{min}/{max}")
+    @Override
     public List<VilleDto> getVillePopulation(@PathVariable Integer min, @PathVariable Integer max){
-        return villeService.villesPopulationsSupMinInfMax(min, max)
+        return IVilleService.villesPopulationsSupMinInfMax(min, max)
                 .stream().map(villeMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -257,8 +304,9 @@ private final VilleService villeService;
      * @return
      */
     @GetMapping("/departement/{code}/population/{min}")
+    @Override
     public List<VilleDto> getVillesSupMinDep(@PathVariable String code, @PathVariable Integer min){
-        return villeService.villesPopulationDepartementSupMin(code, min)
+        return IVilleService.villesPopulationDepartementSupMin(code, min)
                 .stream().map(villeMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -270,8 +318,9 @@ private final VilleService villeService;
      * @return
      */
     @GetMapping("/departement/{code}/population/{min}/{max}")
+    @Override
     public List<VilleDto> getVillesSupMinInfMaxDep(@PathVariable String code, @PathVariable Integer min, @PathVariable Integer max){
-     return villeService.villesPopulationDepartementSupMinInfMax(code, min, max)
+     return IVilleService.villesPopulationDepartementSupMinInfMax(code, min, max)
              .stream().map(villeMapper::toDto)
              .collect(Collectors.toList());
     }
@@ -283,10 +332,25 @@ private final VilleService villeService;
      * @return
      */
     @GetMapping("/departement/{code}/top/{n}")
-    public List<VilleDto> getTopVillesDepartement (@PathVariable String code,@PathVariable int n){
-        return villeService.topVillesDepartement(n, code)
+    @Override
+    public List<VilleDto> getTopVillesDepartement(@PathVariable String code, @PathVariable int n){
+        return IVilleService.topVillesDepartement(n, code)
                 .stream().map(villeMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Recherche ville par caractère
+     * @param chaine
+     * @return
+     * @throws VilleApiException
+     */
+    @GetMapping("/chaine/{chaine}")
+    @Override
+    public List<VilleDto> getVilleChaine(@PathVariable String chaine) throws VilleApiException {
+        System.out.println("Recherche par nom = " + chaine);
+        List<Ville> villes = IVilleService.rechercherVillesParCaracteres(chaine);
+        return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
     }
 
 }

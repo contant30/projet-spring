@@ -1,26 +1,33 @@
 package fr.diginamic.service;
 
-import fr.diginamic.dao.DepartementDao;
+//import fr.diginamic.dao.DepartementDao;
 import fr.diginamic.entites.Departement;
 import fr.diginamic.exception.VilleApiException;
+import fr.diginamic.repository.DepartementRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DepartementService {
+public class DepartementService implements iDepartementService {
 
-    @Autowired
-    private DepartementDao departementDao;
+//    @Autowired
+//    private DepartementDao departementDao;
 
     @Autowired
     private EntityManager entityManager;
 
+    @Autowired
+    private DepartementRepository departementRepository;
+
+
     @Transactional
+    @Override
     public void saveDepartement(Departement departement) {
         entityManager.persist(departement);
     }
@@ -29,22 +36,26 @@ public class DepartementService {
      * @return une liste de département
      */
     @Transactional
+    @Override
     public List<Departement> extraireDepartement() {
-        return departementDao.getDepartement();
+        return departementRepository.findAll();
     }
 
     /**
-     * @param idDepartement l'identifiant de la ville recherchée
-     * @return un département par son id
+     *
+     * @param id
+     * @return
      */
     @Transactional
-    public Departement extractDepartementID(Long idDepartement) {
-        return departementDao.getDepartementId(idDepartement);
+    @Override
+    public Optional<Departement> extractDepartementID(Long id) {
+        return departementRepository.findById(id);
     }
 
     @Transactional
+    @Override
     public Departement extractDepartementCode(String codeDepartement) {
-        return departementDao.getDepartementCode(codeDepartement);
+        return departementRepository.findByCodePostale(codeDepartement);
     }
 
     /**
@@ -52,8 +63,9 @@ public class DepartementService {
      * @return une ville par son nom
      */
     @Transactional
+    @Override
     public Departement extractDepartementNom(String nomDepartement){
-        return departementDao.getDepartementNom(nomDepartement);
+        return departementRepository.findByNomIgnoreCase(nomDepartement);
     }
 
     /**
@@ -62,15 +74,12 @@ public class DepartementService {
      * @throws VilleApiException
      */
     @Transactional
-    public List<Departement> ajouterDepartement(Departement departement) throws VilleApiException {
-
-        for (Departement d : extraireDepartement()){
-            if ((d.getNom().equals(departement.getNom()))){
-                throw new VilleApiException("le departement existe déjà");
-            }
+    @Override
+    public Departement ajouterDepartement(Departement departement) throws VilleApiException {
+        if (departementRepository.findByNomIgnoreCase(departement.getNom()) != null) {
+            throw new VilleApiException("Département '" + departement.getNom() + "' existe déjà");
         }
-        departementDao.insertDepartement(departement);
-        return extraireDepartement();
+        return departementRepository.save(departement);
     }
 
     /**
@@ -80,6 +89,7 @@ public class DepartementService {
      * @throws VilleApiException
      */
     @Transactional
+    @Override
     public List<Departement> rechercherDepartementNom(String chaine) throws VilleApiException {
         if (chaine == null || chaine.trim().isEmpty()) {
             throw new VilleApiException("La recherche ne peut être vide ou null");
@@ -88,36 +98,26 @@ public class DepartementService {
     }
 
     /**
-     * Modifie un département par rapport à son id
-     * @param idDepartement
-     * @param departementModifiee
-     * @return une liste de ville
+     *
+     * @param id
+     * @param depModifiee
+     * @return
      * @throws VilleApiException
      */
     @Transactional
-    public List<Departement> modifierDepartementNom(Long idDepartement, Departement departementModifiee) throws VilleApiException{
+    @Override
+    public Departement modifierDepartementNom(Long idDepartement, Departement departementModifiee) throws VilleApiException {
+        Departement depExiste = departementRepository.findById(idDepartement)
+                .orElseThrow(() -> new VilleApiException("Département " + idDepartement + " introuvable"));
 
-        Departement departementExiste = departementDao.getDepartementId(idDepartement);
-        if (departementExiste == null) {
-            throw new VilleApiException("Pas de département trouvée avec l'id : " + idDepartement);
+        if (!depExiste.getNom().equals(departementModifiee.getNom()) &&
+                departementRepository.findByNomIgnoreCase(departementModifiee.getNom()) != null) {
+            throw new VilleApiException("Nom existe déjà");
         }
 
-        // Vérifie si le nouveau nom du departement existe déjà
-        if (!departementExiste.getNom().equals(departementModifiee.getNom())) {
-            for (Departement d : extraireDepartement()) {
-                if (d.getNom().equals(departementModifiee.getNom())) {
-                    throw new VilleApiException("Un departement avec ce nom existe déjà");
-                }
-            }
-        }
-        // Mise à jour
-        departementExiste.setNom(departementModifiee.getNom());
-        departementExiste.setCodePostale(departementModifiee.getCodePostale());
-
-        // Sauvegarde en base
-        departementDao.modifierDepartement(departementExiste);
-
-        // Retourne la liste des villes
-        return extraireDepartement();
+        depExiste.setNom(departementModifiee.getNom());
+        depExiste.setCodePostale(departementModifiee.getCodePostale());
+        return departementRepository.save(depExiste);
     }
+
 }
