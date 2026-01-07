@@ -1,5 +1,8 @@
 package fr.diginamic.controleurs;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 import fr.diginamic.DTO.DepartementDto;
 import fr.diginamic.DTO.VilleDto;
 import fr.diginamic.entites.Departement;
@@ -8,6 +11,7 @@ import fr.diginamic.exception.VilleApiException;
 import fr.diginamic.repository.VilleRepository;
 import fr.diginamic.service.IVilleService;
 import fr.diginamic.service.iDepartementService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +37,8 @@ import java.util.stream.Collectors;
 public class VilleControleur implements IVilleControleur {
 
 
-@Autowired
-private final IVilleService IVilleService;
+    @Autowired
+    private IVilleService IVilleService;
 
     @Autowired
     private VilleMapper villeMapper;
@@ -351,6 +355,24 @@ private final IVilleService IVilleService;
         System.out.println("Recherche par nom = " + chaine);
         List<Ville> villes = IVilleService.rechercherVillesParCaracteres(chaine);
         return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
+    }
+
+    @GetMapping("/population/{min}/fiche")
+    public void ficheVille(@PathVariable Integer min, HttpServletResponse response) throws Exception{
+
+        response.setContentType("text/csv;charset=UTF-8");
+        response.setHeader("Content-Disposition", "attachment; filename=\"villes_min_" + min + ".csv\"");
+
+        response.getWriter().append("Nom;habitant;code département");
+        List<VilleDto> villes = IVilleService.villesPopulationSupMin(min)
+                .stream().map(villeMapper::toDto)
+                .collect(Collectors.toList());
+
+        for (VilleDto v : villes){
+            response.getWriter().append(v.getNom()+";"+v.getPopulation()+";"+v.getCodeDepartement());
+        }
+
+        response.flushBuffer();
     }
 
 }

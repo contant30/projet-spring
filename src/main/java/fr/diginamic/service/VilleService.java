@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
+import org.springframework.web.bind.annotation.GetMapping;
+
 import java.util.List;
 
 @Service
@@ -178,6 +180,8 @@ public class VilleService implements IVilleService {
     public Ville rechercheVilleParNom(String nom){
         return villeRepository.findByNomIgnoreCase(nom);
     }
+
+
 
 
 }
