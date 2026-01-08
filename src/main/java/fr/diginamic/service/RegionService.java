@@ -1,6 +1,5 @@
 package fr.diginamic.service;
 
-import fr.diginamic.entites.Departement;
 import fr.diginamic.entites.Region;
 import fr.diginamic.exception.VilleApiException;
 import fr.diginamic.repository.RegionRepository;

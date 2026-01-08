@@ -1,8 +1,8 @@
 package fr.diginamic.repository;
 
 import fr.diginamic.entites.Departement;
+import fr.diginamic.entites.Region;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +19,8 @@ public interface DepartementRepository extends JpaRepository<Departement, Long> 
     Optional<Departement> findByNomIgnoreCase(String nom);
 
     Optional<Departement> findByCode(String code);
+
+    List<Departement> findByRegion(Region region);
 
 
 

@@ -34,8 +34,6 @@ public class TraitementFichierRegion implements CommandLineRunner {
         RestTemplate template = new RestTemplate();
         RegionDto[] liste = template.getForObject("https://geo.api.gouv.fr/regions", RegionDto[].class);
 
-        int miseAJour = 0, cree = 0;
-
         for (RegionDto regDto : liste) {
             Optional<Region> optReg = IRegionService.findByCode(regDto.getCode());
 
@@ -45,7 +43,6 @@ public class TraitementFichierRegion implements CommandLineRunner {
 
                 try {
                     IRegionService.modifierRegionNom(optReg.get().getId(), reg);
-                    miseAJour++;
                 } catch (VilleApiException e) {
                     System.err.println("Erreur update " + regDto.getCode() + ": " + e.getMessage());
                 }
@@ -56,14 +53,10 @@ public class TraitementFichierRegion implements CommandLineRunner {
                 reg.setNom(regDto.getNom());
                 try {
                     IRegionService.ajouterRegion(reg);
-                    cree++;
-
 
             } catch (VilleApiException e) {
 
-
                 }
-                System.out.printf("Mise à jour: %d, Créés: %d%n", miseAJour, cree);
             }
         }
     }
