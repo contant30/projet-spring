@@ -14,7 +14,7 @@ public class DepartementMapper {
     public DepartementDto toDto (Departement departement){
         DepartementDto dto = new DepartementDto();
         dto.setNom(departement.getNom());
-        dto.setCodePostale(departement.getCodePostale());
+        dto.setCode(departement.getCode());
         dto.setId(departement.getId());
 
         return dto;
@@ -27,7 +27,7 @@ public class DepartementMapper {
     public Departement toBean(DepartementDto dto){
         Departement departement = new Departement();
         departement.setNom(dto.getNom());
-        departement.setCodePostale(dto.getCodePostale());
+        departement.setCode(dto.getCode());
         departement.setId(dto.getId());
 
         return departement;

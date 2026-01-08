@@ -178,6 +178,11 @@ public class DepartementControleur {
         // Ligne vide
         document.add(new Paragraph(" "));
 
+        // Ligne
+        document.add(new Paragraph("Listes des villes du département "));
+
+        // Ligne vide
+        document.add(new Paragraph(" "));
 
         // tableau des villes
         PdfPTable table = new PdfPTable(2);

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityManager;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
 
@@ -163,17 +162,17 @@ public class VilleService implements IVilleService {
 
     @Override
     public List<Ville> villesPopulationDepartementSupMin(String codeDep, Integer min){
-        return villeRepository.findByDepartementCodePostaleAndPopulationGreaterThanOrderByPopulationDesc(codeDep, min);
+        return villeRepository.findByDepartementCodeAndPopulationGreaterThanOrderByPopulationDesc(codeDep, min);
     }
 
     @Override
     public List<Ville> villesPopulationDepartementSupMinInfMax(String codeDep, Integer min, Integer max){
-        return villeRepository.findByDepartementCodePostaleAndPopulationBetweenOrderByPopulationDesc(codeDep, min, max);
+        return villeRepository.findByDepartementCodeAndPopulationBetweenOrderByPopulationDesc(codeDep, min, max);
     }
 
     @Override
     public List<Ville> topVillesDepartement(int n, String codeDep){
-        return villeRepository.findTopByDepartementCodePostaleOrderByPopulationDesc(codeDep, n);
+        return villeRepository.findTopByDepartementCodeOrderByPopulationDesc(codeDep, n);
     }
 
     @Override
@@ -183,7 +182,7 @@ public class VilleService implements IVilleService {
 
     @Override
     public List<Ville> extraireVilleParDepartementCode(String codeDepartement) {
-        return villeRepository.findByDepartementCodePostaleStartingWith(codeDepartement);
+        return villeRepository.findByDepartementCodeStartingWith(codeDepartement);
     }
 
 

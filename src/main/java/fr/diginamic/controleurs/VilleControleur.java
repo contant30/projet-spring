@@ -1,8 +1,5 @@
 package fr.diginamic.controleurs;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
 import fr.diginamic.DTO.DepartementDto;
 import fr.diginamic.DTO.VilleDto;
 import fr.diginamic.entites.Departement;
@@ -90,7 +87,7 @@ public class VilleControleur implements IVilleControleur {
 
             // code doit être présent
             DepartementDto depDto = villeDto.getDepartementDto();
-            if (depDto == null ||(depDto.getId() == null &&(depDto.getCodePostale() == null || depDto.getCodePostale().isBlank()))) {
+            if (depDto == null ||(depDto.getId() == null &&(depDto.getCode() == null || depDto.getCode().isBlank()))) {
                 return ResponseEntity.badRequest().body("Un département doit être associé");
             }
 
@@ -101,15 +98,15 @@ public class VilleControleur implements IVilleControleur {
                         .orElseThrow(() -> new VilleApiException("Département ID " + depDto.getId() + " introuvable"));
             }
 
-            if (departement == null &&depDto.getCodePostale() != null && !depDto.getCodePostale().isEmpty()) {
+            if (departement == null &&depDto.getCode() != null && !depDto.getCode().isEmpty()) {
 
-                String code = depDto.getCodePostale();
+                String code = depDto.getCode();
                 departement = iDepartementService.extractDepartementCode(code);
 
                 if (departement == null) {
                     Departement nouveau = new Departement();
                     nouveau.setNom(depDto.getNom());
-                    nouveau.setCodePostale(depDto.getCodePostale());
+                    nouveau.setCode(depDto.getCode());
                     iDepartementService.saveDepartement(nouveau);
                     departement = nouveau;
                 }

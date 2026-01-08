@@ -2,15 +2,18 @@ package fr.diginamic.service;
 
 //import fr.diginamic.dao.DepartementDao;
 import fr.diginamic.entites.Departement;
+import fr.diginamic.entites.Region;
 import fr.diginamic.exception.VilleApiException;
 import fr.diginamic.repository.DepartementRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
+
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,6 +27,9 @@ public class DepartementService implements iDepartementService {
 
     @Autowired
     private DepartementRepository departementRepository;
+
+    @Autowired
+    private IRegionService IRegionService;
 
 
     @Transactional
@@ -55,7 +61,12 @@ public class DepartementService implements iDepartementService {
     @Transactional
     @Override
     public Departement extractDepartementCode(String codeDepartement) {
-        return departementRepository.findByCodePostale(codeDepartement);
+        Optional<Departement> optional = departementRepository.findByCode(codeDepartement);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new EntityNotFoundException("Département non trouvé pour code: " + codeDepartement);
+        }
     }
 
     /**
@@ -65,7 +76,8 @@ public class DepartementService implements iDepartementService {
     @Transactional
     @Override
     public Departement extractDepartementNom(String nomDepartement){
-        return departementRepository.findByNomIgnoreCase(nomDepartement);
+        return departementRepository.findByNomIgnoreCase(nomDepartement)
+                .orElseThrow(() -> new EntityNotFoundException("Département '" + nomDepartement + "' introuvable"));
     }
 
     /**
@@ -76,7 +88,7 @@ public class DepartementService implements iDepartementService {
     @Transactional
     @Override
     public Departement ajouterDepartement(Departement departement) throws VilleApiException {
-        if (departementRepository.findByNomIgnoreCase(departement.getNom()) != null) {
+        if (departementRepository.findByNomIgnoreCase(departement.getNom()).isPresent()) {
             throw new VilleApiException("Département '" + departement.getNom() + "' existe déjà");
         }
         return departementRepository.save(departement);
@@ -110,14 +122,21 @@ public class DepartementService implements iDepartementService {
         Departement depExiste = departementRepository.findById(idDepartement)
                 .orElseThrow(() -> new VilleApiException("Département " + idDepartement + " introuvable"));
 
-        if (!depExiste.getNom().equals(departementModifiee.getNom()) &&
-                departementRepository.findByNomIgnoreCase(departementModifiee.getNom()) != null) {
-            throw new VilleApiException("Nom existe déjà");
+
+        String codeRegionInput = departementModifiee.getCodeRegion();  // Direct DTO
+        if (codeRegionInput != null && !codeRegionInput.isEmpty()) {
+            Region region = IRegionService.extractRegionCode(codeRegionInput);
+            depExiste.setRegion(region);
         }
 
         depExiste.setNom(departementModifiee.getNom());
-        depExiste.setCodePostale(departementModifiee.getCodePostale());
-        return departementRepository.save(depExiste);
+        depExiste.setCode(departementModifiee.getCode());
+
+        return departementRepository.saveAndFlush(depExiste);
+    }
+
+    public Optional<Departement> findByCode(String code) {
+        return departementRepository.findByCode(code);
     }
 
 }

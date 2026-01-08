@@ -29,20 +29,20 @@ public interface VilleRepository extends CrudRepository<Ville, Integer> {
     //Recherche de toutes les villes d’un département dont la population est supérieure à
     //min (paramètre de type int). Les villes sont retournées par population descendante.
 
-    List<Ville> findByDepartementCodePostaleAndPopulationGreaterThanOrderByPopulationDesc(
+    List<Ville> findByDepartementCodeAndPopulationGreaterThanOrderByPopulationDesc(
             String codeDepartement, Integer min);
 
     //Recherche de toutes les villes d’un département dont la population est supérieure à
     //min et inférieure à max. Les villes sont retournées par population descendante.
 
-    List<Ville> findByDepartementCodePostaleAndPopulationBetweenOrderByPopulationDesc(
+    List<Ville> findByDepartementCodeAndPopulationBetweenOrderByPopulationDesc(
             String codeDepartement, Integer min, Integer max);
 
     //Recherche des n villes les plus peuplées d’un département donné (n est aussi un
     //paramètre)
-    List<Ville> findTopByDepartementCodePostaleOrderByPopulationDesc(
+    List<Ville> findTopByDepartementCodeOrderByPopulationDesc(
             String codeDepartement, int n);
 
-    List<Ville> findByDepartementCodePostaleStartingWith(String codeDepartement);
+    List<Ville> findByDepartementCodeStartingWith(String codeDepartement);
 
 }

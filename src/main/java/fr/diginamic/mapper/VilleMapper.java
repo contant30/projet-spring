@@ -22,7 +22,7 @@ public class VilleMapper implements IVilleMapper {
         if (ville.getDepartement() !=null){
             DepartementDto depDTO= departementMapper.toDto(ville.getDepartement());
             dto.setDepartementDto(depDTO);
-            dto.setCodeDepartement(ville.getDepartement().getCodePostale());
+            dto.setCodeDepartement(ville.getDepartement().getCode());
             dto.setIdDepartement(ville.getDepartement().getId());
         }
         return dto;

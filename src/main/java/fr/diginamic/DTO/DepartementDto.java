@@ -5,7 +5,8 @@ public class DepartementDto {
 
     private Long id;
     private String nom;
-    private String codePostale;
+    private String code;
+    private String codeRegion;
 
     public String getNom() {return nom;}
 
@@ -13,15 +14,25 @@ public class DepartementDto {
         this.nom = nom;
     }
 
-    public String getCodePostale() {return codePostale;}
+    public String getCode() {return code;}
 
-    public void setCodePostale(String codePostale) {
-        this.codePostale = codePostale;
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public Long getId() {return id;}
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getCodeRegion() { return codeRegion; }
+    public void setCodeRegion(String codeRegion) { this.codeRegion = codeRegion; }
+
+
+
+    @Override
+    public String toString() {
+        return  "nom = " + nom  +", code=" + code;
     }
 }
