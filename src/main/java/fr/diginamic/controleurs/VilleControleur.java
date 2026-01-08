@@ -357,6 +357,12 @@ public class VilleControleur implements IVilleControleur {
         return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
     }
 
+    /**
+     * Mise en place export csv pour recherche de villes population sup à min
+     * @param min
+     * @param response
+     * @throws Exception
+     */
     @GetMapping("/population/{min}/fiche")
     public void ficheVille(@PathVariable Integer min, HttpServletResponse response) throws Exception{
 
@@ -371,7 +377,6 @@ public class VilleControleur implements IVilleControleur {
         for (VilleDto v : villes){
             response.getWriter().append(v.getNom()+";"+v.getPopulation()+";"+v.getCodeDepartement());
         }
-
         response.flushBuffer();
     }
 

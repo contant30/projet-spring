@@ -35,4 +35,6 @@ public interface IVilleService {
     List<Ville> topVillesDepartement(int n, String codeDep);
 
     Ville rechercheVilleParNom(String nom);
+
+    List<Ville> extraireVilleParDepartementCode(String codeDepartement);
 }

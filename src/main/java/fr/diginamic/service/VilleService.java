@@ -181,6 +181,11 @@ public class VilleService implements IVilleService {
         return villeRepository.findByNomIgnoreCase(nom);
     }
 
+    @Override
+    public List<Ville> extraireVilleParDepartementCode(String codeDepartement) {
+        return villeRepository.findByDepartementCodePostaleStartingWith(codeDepartement);
+    }
+
 
 
 

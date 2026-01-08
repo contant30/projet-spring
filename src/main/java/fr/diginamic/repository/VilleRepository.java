@@ -43,4 +43,6 @@ public interface VilleRepository extends CrudRepository<Ville, Integer> {
     List<Ville> findTopByDepartementCodePostaleOrderByPopulationDesc(
             String codeDepartement, int n);
 
+    List<Ville> findByDepartementCodePostaleStartingWith(String codeDepartement);
+
 }
