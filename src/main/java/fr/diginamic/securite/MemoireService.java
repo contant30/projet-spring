@@ -1,5 +1,7 @@
 package fr.diginamic.securite;
 
+import fr.diginamic.entites.Role;
+import fr.diginamic.entites.Utilisateur;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,4 +29,5 @@ public class MemoireService implements UserDetailsService {
             throw new UsernameNotFoundException("utilisateur " + username + " inconnu.");
         }
     }
+
 }

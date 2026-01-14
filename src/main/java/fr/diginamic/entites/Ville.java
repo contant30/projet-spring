@@ -43,11 +43,8 @@ public class Ville {
         return departement;
     }
 
-
-
     // Constructeur sans paramètre pour JPA
     public Ville(){}
-
 
     /**
      * Constructeur qui permet de créer une ville

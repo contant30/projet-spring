@@ -26,11 +26,12 @@ public class SecuriteConfig {
         // Supprimer
         http.csrf(csrf -> csrf.disable());
 
-        // 2) Règles d'autorisation HTTP pour different role
+        // 2) Règles d'autorisation HTTP pour different rôles
         http.authorizeHttpRequests(auth-> auth
                 .requestMatchers(HttpMethod.POST,"/ville/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/ville/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET,"/ville/**").hasRole("USER")
+                .requestMatchers(HttpMethod.PUT,"/ville/**").hasRole("ADMIN")
                 .anyRequest().authenticated());
         return http.build();
     }
