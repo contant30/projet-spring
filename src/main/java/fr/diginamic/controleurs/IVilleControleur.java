@@ -1,6 +1,5 @@
 package fr.diginamic.controleurs;
 
-import fr.diginamic.DTO.DepartementDto;
 import fr.diginamic.DTO.VilleDto;
 import fr.diginamic.exception.VilleApiException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 

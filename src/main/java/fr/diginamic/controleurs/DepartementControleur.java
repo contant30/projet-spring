@@ -9,7 +9,6 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import fr.diginamic.DTO.DepartementDto;
-import fr.diginamic.DTO.VilleDto;
 import fr.diginamic.entites.Departement;
 import fr.diginamic.entites.Ville;
 import fr.diginamic.exception.VilleApiException;
