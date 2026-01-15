@@ -18,8 +18,9 @@ public class SecuriteConfig {
     }
 
     @Bean
-    SecurityFilterChain securiteFilterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain securiteFilterChain(HttpSecurity http, MemoireService userDetailsService) throws Exception{
 
+        http.userDetailsService(userDetailsService);
         // 1) Je veux HTTP Basic avec le paramétrage par défaut
         http.httpBasic(Customizer.withDefaults());
 
