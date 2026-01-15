@@ -63,7 +63,7 @@ public class VilleControleur implements IVilleControleur {
      * @return une liste de ville
      */
     @GetMapping
-    @Secured({"USER","ADMIN"})
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
     @Override
     public List<VilleDto> getVille() {
         List<Ville> villes = IVilleService.extraireVille();
