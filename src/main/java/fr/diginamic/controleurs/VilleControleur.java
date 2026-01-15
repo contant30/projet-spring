@@ -63,7 +63,7 @@ public class VilleControleur implements IVilleControleur {
      * @return une liste de ville
      */
     @GetMapping
-    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @Secured({"USER","ADMIN"})
     @Override
     public List<VilleDto> getVille() {
         List<Ville> villes = IVilleService.extraireVille();
@@ -232,7 +232,7 @@ public class VilleControleur implements IVilleControleur {
                 return ResponseEntity.badRequest().body(message);
             }
 
-            // code doit être présent
+
             DepartementDto depDto = villeDto.getDepartementDto();
             if (depDto == null ||(depDto.getId() == null &&(depDto.getCode() == null || depDto.getCode().isBlank()))) {
                 return ResponseEntity.badRequest().body("Un département doit être associé");
@@ -323,72 +323,6 @@ public class VilleControleur implements IVilleControleur {
 
 
 
-//    /**
-//     * Recherche par nom
-//     * @param nom
-//     * @return
-//     * @throws VilleApiException
-//     */
-//    @GetMapping("/nom/{nom}")
-//    public VilleDto getVilleNom(@PathVariable String nom) throws VilleApiException {
-//        System.out.println("Recherche par nom = " + nom);
-//
-//        if (nom == null || nom.trim().isEmpty()) {
-//            throw new VilleApiException("La recherche ne peut être vide ou null");
-//        }
-//
-//        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getNom().equalsIgnoreCase(nom)).findFirst();
-//
-//        if (ville.isEmpty()) {
-//            throw new VilleApiException("Aucune ville trouvée avec le nom : " + nom);
-//        }
-//        return villeMapper.toDto(ville.get());
-//    }
-
-//    /**
-//     *
-//     * @param min
-//     * @return
-//     * @throws VilleApiException
-//     */
-//    @GetMapping("/population/{min}")
-//    public List<VilleDto> getVillePopulation(@PathVariable int min) throws VilleApiException {
-//        System.out.println("Recherche par nom = " + min);
-//
-//        if (min < 0) {
-//            throw new VilleApiException("La recherche ne peut être vide ou null");
-//        }
-//
-//        List<Ville> villes = villeService.extraireVille().stream().filter(ville -> ville.getPopulation() > min).collect(Collectors.toList());
-//
-//        if (villes.isEmpty()) {
-//            throw new VilleApiException("Aucune ville trouvée avec une population supérieure à " + min);
-//        }
-//        return villes.stream().map(villeMapper::toDto).collect(Collectors.toList());
-//    }
-
-
-    /**
-     //     * Recherche par nom
-     //     * @param nom
-     //     * @return
-     //     * @throws VilleApiException
-     //     */
-//    @GetMapping("/nom/{nom}")
-//    public VilleDto getVilleNom(@PathVariable String nom) throws VilleApiException {
-//        System.out.println("Recherche par nom = " + nom);
-//
-//        if (nom == null || nom.trim().isEmpty()) {
-//            throw new VilleApiException("La recherche ne peut être vide ou null");
-//        }
-//
-//        Optional<Ville> ville = villeService.extraireVille().stream().filter(v -> v.getNom().equalsIgnoreCase(nom)).findFirst();
-//
-//        if (ville.isEmpty()) {
-//            throw new VilleApiException("Aucune ville trouvée avec le nom : " + nom);
-//        }
-//        return villeMapper.toDto(ville.get());
-//    }
 
 }
 

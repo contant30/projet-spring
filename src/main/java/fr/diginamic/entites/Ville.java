@@ -83,6 +83,22 @@ public class Ville {
 
     public void setDepartement(Departement departement) {this.departement = departement;}
 
+    public String getUserMaj() {
+        return userMaj;
+    }
+
+    public void setUserMaj(String userMaj) {
+        this.userMaj = userMaj;
+    }
+
+    public LocalDateTime getDateMaj() {
+        return dateMaj;
+    }
+
+    public void setDateMaj(LocalDateTime dateMaj) {
+        this.dateMaj = dateMaj;
+    }
+
     @Override
     public String toString() {
         return "Ville{" +

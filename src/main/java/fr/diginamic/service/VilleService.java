@@ -1,6 +1,8 @@
 package fr.diginamic.service;
 
 //import fr.diginamic.dao.VilleDao;
+import com.itextpdf.text.log.Logger;
+import com.itextpdf.text.log.LoggerFactory;
 import fr.diginamic.entites.Ville;
 import fr.diginamic.exception.VilleApiException;
 import fr.diginamic.repository.VilleRepository;
@@ -15,19 +17,14 @@ import java.util.List;
 @Service
 public class VilleService implements IVilleService {
 
-//    @Autowired
-//    private VilleDao villeDao;
+
+    private static final Logger logger = LoggerFactory.getLogger(VilleService.class);
 
     @Autowired
     private VilleRepository villeRepository;
 
     @Autowired
     private EntityManager entityManager;
-
-//    @Transactional
-//    public void saveVille(Ville ville) {
-//        entityManager.persist(ville);
-//    }
 
     /**
      * @return une liste de ville
@@ -49,30 +46,6 @@ public class VilleService implements IVilleService {
         return villeRepository.findById(idVille)
                 .orElseThrow(() -> new VilleApiException("Ville " + idVille + " introuvable"));    }
 
-//    /**
-//     * @param nomVille le nom de la ville recherchée
-//     * @return une ville par son nom
-//     */
-//    @Transactional
-//    public Ville extractVilleNom(String nomVille){
-//        return villeDao.getVilleNom(nomVille);
-//    }
-
-//    /**
-//     * Recherche une ville par rapport à son nom
-//     * @param chaine
-//     * @return
-//     * @throws VilleApiException
-//     */
-//    @Transactional
-//    public List<Ville> rechercherVilleParNom(String chaine) throws VilleApiException {
-//        if (chaine == null || chaine.trim().isEmpty()) {
-//            throw new VilleApiException("La recherche ne peut être vide ou null");
-//        }
-//        return extraireVille().stream()
-//                .filter(ville -> ville.getNom().toLowerCase().startsWith(chaine.toLowerCase()))
-//                .collect(Collectors.toList());
-//    }
 
 
     /**
