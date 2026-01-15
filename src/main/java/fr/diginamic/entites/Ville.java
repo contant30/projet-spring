@@ -14,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "ville")
 public class Ville {
@@ -30,6 +32,12 @@ public class Ville {
     @Min(value = 1, message="La population de la ville doit être supérieure à 1")
     @Column(name = "population")
     private Integer population;
+
+    @Column(name = "user_maj")
+    private String userMaj;
+
+    @Column(name = "date_maj")
+    private LocalDateTime dateMaj;
 
     /**
      * Relation Many-to-one avec l'entité département.

@@ -9,6 +9,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
+import java.time.LocalDateTime;
 import java.util.Set;
 
 
@@ -25,6 +27,12 @@ public class Departement {
 
     @Column ( name = "code_departement")
     private String code;
+
+    @Column(name = "user_maj")
+    private String userMaj;
+
+    @Column(name = "date_maj")
+    private LocalDateTime dateMaj;
 
 
     /**
